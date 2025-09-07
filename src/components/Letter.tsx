@@ -1,20 +1,29 @@
 import React, { useState, useCallback } from 'react';
 import './Letter.css';
+import { StarFilledIcon, StarIcon } from '@radix-ui/react-icons';
 
 interface LetterProps {
   onOpen: () => void;
+  onLetterClick?: () => void;
 }
 
-const Letter: React.FC<LetterProps> = ({ onOpen }) => {
+const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
   const handleLetterClick = useCallback(() => {
-    setIsOpening(true);
+    if (onLetterClick) {
+      onLetterClick();
+    }
+    
+    setTimeout(() => {
+      setIsOpening(true);
+    }, 100);
+    
     setTimeout(() => {
       onOpen();
     }, 1500);
-  }, [onOpen]);
+  }, [onOpen, onLetterClick]);
 
   const handleMouseEnter = useCallback(() => {
     setIsHovered(true);
@@ -68,16 +77,28 @@ const Letter: React.FC<LetterProps> = ({ onOpen }) => {
       
       <div className="letter-instructions">
         <p>Click the letter to open your invitation</p>
-        <div className="magical-sparkles">✨</div>
+        <div className="magical-sparkles">
+          <StarFilledIcon className="icon" />
+        </div>
       </div>
       
       {isOpening && (
         <div className="opening-effects">
-          <div className="sparkle sparkle-1">✨</div>
-          <div className="sparkle sparkle-2">⭐</div>
-          <div className="sparkle sparkle-3">✨</div>
-          <div className="sparkle sparkle-4">⭐</div>
-          <div className="sparkle sparkle-5">✨</div>
+          <div className="sparkle sparkle-1">
+            <StarFilledIcon className="icon" />
+          </div>
+          <div className="sparkle sparkle-2">
+            <StarIcon className="icon" />
+          </div>
+          <div className="sparkle sparkle-3">
+            <StarFilledIcon className="icon" />
+          </div>
+          <div className="sparkle sparkle-4">
+            <StarIcon className="icon" />
+          </div>
+          <div className="sparkle sparkle-5">
+            <StarFilledIcon className="icon" />
+          </div>
           <div className="magical-dust"></div>
         </div>
       )}

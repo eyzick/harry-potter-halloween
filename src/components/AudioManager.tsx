@@ -1,23 +1,23 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 
 interface AudioManagerProps {
   isLetterOpened: boolean;
+  onMuteToggle?: (isMuted: boolean) => void;
 }
 
-const AudioManager: React.FC<AudioManagerProps> = ({ isLetterOpened }) => {
+interface AudioManagerRef {
+  playLetterClickSound: () => void;
+}
+
+const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterOpened, onMuteToggle }, ref) => {
   const voicyAudioRef = useRef<HTMLAudioElement>(null);
   const musicAudioRef = useRef<HTMLAudioElement>(null);
-  const [voicyFiles] = useState([
-    'troll.mp3',
-    'yer_a_wizard.mp3',
-    'welcome.mp3',
-    'mail.mp3',
-    'gryffindor.mp3',
-  ]);
   const [hasPlayedVoicy, setHasPlayedVoicy] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   const playHedwigsTheme = useCallback(() => {
-    console.log('Attempting to play Hedwig\'s Theme...');
+    if (isMuted) return;
+    
     if (musicAudioRef.current) {
       musicAudioRef.current.src = '/audio/music/Hedwig\'s Theme.mp3';
       musicAudioRef.current.loop = true;
@@ -32,10 +32,51 @@ const AudioManager: React.FC<AudioManagerProps> = ({ isLetterOpened }) => {
     } else {
       console.warn('Music audio ref is null');
     }
-  }, []);
+  }, [isMuted]);
 
-  const playRandomVoicyClip = useCallback(() => {
+  useEffect(() => {
+    if (isLetterOpened && !hasPlayedVoicy) {
+      setHasPlayedVoicy(true);
+      setTimeout(() => {
+        playHedwigsTheme();
+      }, 500);
+    }
+  }, [isLetterOpened, hasPlayedVoicy, playHedwigsTheme]);
+
+  const handleVoicyEnded = () => {
+    setTimeout(() => {
+      playHedwigsTheme();
+    }, 500);
+  };
+
+  const toggleMute = useCallback(() => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    if (newMutedState && musicAudioRef.current) {
+      musicAudioRef.current.pause();
+    } else if (!newMutedState && musicAudioRef.current && musicAudioRef.current.src) {
+      musicAudioRef.current.play().catch((error) => {
+        console.warn('Failed to resume music:', error);
+      });
+    }
+    
+    if (onMuteToggle) {
+      onMuteToggle(newMutedState);
+    }
+  }, [isMuted, onMuteToggle]);
+
+  const playLetterClickSound = useCallback(() => {
+    if (isMuted) return;
+    
     if (voicyAudioRef.current) {
+      const voicyFiles = [
+        'troll.mp3',
+        'yer_a_wizard.mp3',
+        'welcome.mp3',
+        'mail.mp3',
+        'gryffindor.mp3',
+      ];
       const randomFile = voicyFiles[Math.floor(Math.random() * voicyFiles.length)];
       voicyAudioRef.current.src = `/audio/voicy/${randomFile}`;
       voicyAudioRef.current.volume = 0.7;
@@ -54,20 +95,11 @@ const AudioManager: React.FC<AudioManagerProps> = ({ isLetterOpened }) => {
         }, 1000);
       });
     }
-  }, [voicyFiles, playHedwigsTheme]);
+  }, [isMuted, playHedwigsTheme]);
 
-  useEffect(() => {
-    if (isLetterOpened && !hasPlayedVoicy) {
-      playRandomVoicyClip();
-      setHasPlayedVoicy(true);
-    }
-  }, [isLetterOpened, hasPlayedVoicy, playRandomVoicyClip]);
-
-  const handleVoicyEnded = () => {
-    setTimeout(() => {
-      playHedwigsTheme();
-    }, 500);
-  };
+  useImperativeHandle(ref, () => ({
+    playLetterClickSound
+  }), [playLetterClickSound]);
 
   return (
     <>
@@ -81,8 +113,17 @@ const AudioManager: React.FC<AudioManagerProps> = ({ isLetterOpened }) => {
         ref={musicAudioRef}
         preload="metadata"
       />
+      
+      <button
+        className="mute-button"
+        onClick={toggleMute}
+        aria-label={isMuted ? "Unmute" : "Mute"}
+        title={isMuted ? "Unmute Hedwig's Theme" : "Mute Hedwig's Theme"}
+      >
+        {isMuted ? '🔇' : '🔊'}
+      </button>
     </>
   );
-};
+});
 
 export default AudioManager;

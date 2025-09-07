@@ -1,6 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import './InvitationCard.css';
 import RSVPForm from './RSVPForm';
+import { 
+  CalendarIcon, 
+  ClockIcon, 
+  HomeIcon, 
+  StarIcon,
+  MixerHorizontalIcon,
+  CameraIcon,
+  SpeakerLoudIcon,
+  CookieIcon
+} from '@radix-ui/react-icons';
 
 const InvitationCard: React.FC = () => {
   const [showRSVP, setShowRSVP] = useState(false);
@@ -34,19 +44,27 @@ const InvitationCard: React.FC = () => {
           
           <div className="invitation-details">
             <div className="detail-item">
-              <span className="detail-label">📅 Date:</span>
+              <span className="detail-label">
+                <CalendarIcon className="icon" /> Date:
+              </span>
               <span className="detail-value">October 31st, 2024</span>
             </div>
             <div className="detail-item">
-              <span className="detail-label">🕰️ Time:</span>
+              <span className="detail-label">
+                <ClockIcon className="icon" /> Time:
+              </span>
               <span className="detail-value">7:00 PM - Midnight</span>
             </div>
             <div className="detail-item">
-              <span className="detail-label">🏰 Location:</span>
+              <span className="detail-label">
+                <HomeIcon className="icon" /> Location:
+              </span>
               <span className="detail-value">123 Diagon Alley, Hogsmeade</span>
             </div>
             <div className="detail-item">
-              <span className="detail-label">👻 Dress Code:</span>
+              <span className="detail-label">
+                <StarIcon className="icon" /> Dress Code:
+              </span>
               <span className="detail-value">Wizarding World Costumes Encouraged!</span>
             </div>
           </div>
@@ -54,12 +72,12 @@ const InvitationCard: React.FC = () => {
           <div className="party-description">
             <p>Join us for a magical evening filled with:</p>
             <ul>
-              <li>✨ Potion-making station</li>
-              <li>🎃 Pumpkin carving contest</li>
-              <li>🍺 Butterbeer tasting</li>
-              <li>🎭 Costume contest with prizes</li>
-              <li>🎵 Magical music and dancing</li>
-              <li>🍰 Enchanted treats and cauldron cakes</li>
+              <li><MixerHorizontalIcon className="icon" /> Potion-making station</li>
+              <li><StarIcon className="icon" /> Pumpkin carving contest</li>
+              <li><CookieIcon className="icon" /> Butterbeer tasting</li>
+              <li><CameraIcon className="icon" /> Costume contest with prizes</li>
+              <li><SpeakerLoudIcon className="icon" /> Magical music and dancing</li>
+              <li><CookieIcon className="icon" /> Enchanted treats and cauldron cakes</li>
             </ul>
           </div>
 
