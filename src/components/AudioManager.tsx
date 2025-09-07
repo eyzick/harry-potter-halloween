@@ -19,7 +19,7 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
     if (isMuted) return;
     
     if (musicAudioRef.current) {
-      musicAudioRef.current.src = '/audio/music/Hedwig\'s Theme.mp3';
+      musicAudioRef.current.src = './audio/music/Hedwig\'s Theme.mp3';
       musicAudioRef.current.loop = true;
       
       musicAudioRef.current.onerror = () => {
@@ -78,7 +78,7 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
         'gryffindor.mp3',
       ];
       const randomFile = voicyFiles[Math.floor(Math.random() * voicyFiles.length)];
-      voicyAudioRef.current.src = `/audio/voicy/${randomFile}`;
+      voicyAudioRef.current.src = `./audio/voicy/${randomFile}`;
       voicyAudioRef.current.volume = 0.7;
       
       voicyAudioRef.current.onerror = () => {

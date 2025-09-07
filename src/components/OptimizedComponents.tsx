@@ -31,7 +31,7 @@ export const MemoizedInvitationCard = memo(() => {
         <div className="card-content">
           <div className="hogwarts-crest">
             <img 
-              src="/house-crest.png" 
+              src="./house-crest.png" 
               alt="Hogwarts School Crest" 
               className="crest-image"
             />
