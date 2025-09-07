@@ -14,9 +14,10 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
   const musicAudioRef = useRef<HTMLAudioElement>(null);
   const [hasPlayedVoicy, setHasPlayedVoicy] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isHedwigsThemePlaying, setIsHedwigsThemePlaying] = useState(false);
 
   const playHedwigsTheme = useCallback(() => {
-    if (isMuted) return;
+    if (isMuted || isHedwigsThemePlaying) return;
     
     if (musicAudioRef.current) {
       musicAudioRef.current.src = './audio/music/Hedwig\'s Theme.mp3';
@@ -26,27 +27,24 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
         console.warn('Could not load Hedwig\'s Theme');
       };
       
-      musicAudioRef.current.play().catch((error) => {
+      musicAudioRef.current.play().then(() => {
+        setIsHedwigsThemePlaying(true);
+      }).catch((error) => {
         console.warn('Background music playback failed:', error);
       });
     } else {
       console.warn('Music audio ref is null');
     }
-  }, [isMuted]);
+  }, [isMuted, isHedwigsThemePlaying]);
 
   useEffect(() => {
     if (isLetterOpened && !hasPlayedVoicy) {
       setHasPlayedVoicy(true);
-      setTimeout(() => {
-        playHedwigsTheme();
-      }, 500);
     }
-  }, [isLetterOpened, hasPlayedVoicy, playHedwigsTheme]);
+  }, [isLetterOpened, hasPlayedVoicy]);
 
   const handleVoicyEnded = () => {
-    setTimeout(() => {
-      playHedwigsTheme();
-    }, 500);
+    playHedwigsTheme();
   };
 
   const toggleMute = useCallback(() => {
@@ -55,8 +53,11 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
     
     if (newMutedState && musicAudioRef.current) {
       musicAudioRef.current.pause();
+      setIsHedwigsThemePlaying(false);
     } else if (!newMutedState && musicAudioRef.current && musicAudioRef.current.src) {
-      musicAudioRef.current.play().catch((error) => {
+      musicAudioRef.current.play().then(() => {
+        setIsHedwigsThemePlaying(true);
+      }).catch((error) => {
         console.warn('Failed to resume music:', error);
       });
     }
@@ -83,16 +84,12 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
       
       voicyAudioRef.current.onerror = () => {
         console.warn(`Could not load audio file: ${randomFile}`);
-        setTimeout(() => {
-          playHedwigsTheme();
-        }, 1000);
+        playHedwigsTheme();
       };
       
       voicyAudioRef.current.play().catch((error) => {
         console.warn('Audio playback failed:', error);
-        setTimeout(() => {
-          playHedwigsTheme();
-        }, 1000);
+        playHedwigsTheme();
       });
     }
   }, [isMuted, playHedwigsTheme]);
