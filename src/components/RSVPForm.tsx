@@ -2,99 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './RSVPForm.css';
 import { Cross2Icon, StarFilledIcon, StarIcon, CircleIcon, CookieIcon } from '@radix-ui/react-icons';
 import { sendRSVPNotification, sendRSVPConfirmation, RSVPEmailData } from '../services/emailService';
+import { saveRSVP, getCategorySummary, RSVPData, CategorySummary } from '../services/dataService';
 
-interface RSVPData {
-  name: string;
-  email: string;
-  attending: boolean;
-  guestCount: number;
-  dietaryRestrictions: string;
-  bringingItems: string[];
-  drinksDetails: string;
-  snacksDetails: string;
-  otherDetails: string;
-}
-
-interface StoredRSVP extends RSVPData {
-  id: string;
-  timestamp: number;
-}
-
-interface CategorySummary {
-  drinks: string[];
-  snacks: string[];
-  other: string[];
-}
 
 interface RSVPFormProps {
   onClose: () => void;
 }
 
-// Utility functions for localStorage
-const STORAGE_KEY = 'halloween-party-rsvps';
-
-const saveRSVP = (rsvpData: RSVPData): void => {
-  const storedRSVPs = getStoredRSVPs();
-  const newRSVP: StoredRSVP = {
-    ...rsvpData,
-    id: Date.now().toString(),
-    timestamp: Date.now()
-  };
-  storedRSVPs.push(newRSVP);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(storedRSVPs));
-};
-
-const getStoredRSVPs = (): StoredRSVP[] => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-    
-    const parsed = JSON.parse(stored);
-    // Ensure guestCount is always a number
-    return parsed.map((rsvp: any) => ({
-      ...rsvp,
-      guestCount: Number(rsvp.guestCount) || 1
-    }));
-  } catch (error) {
-    console.error('Error reading from localStorage:', error);
-    return [];
-  }
-};
-
-const getCategorySummary = (): CategorySummary => {
-  const rsvps = getStoredRSVPs();
-  const summary: CategorySummary = {
-    drinks: [],
-    snacks: [],
-    other: []
-  };
-
-  rsvps.forEach(rsvp => {
-    if (rsvp.attending) {
-      rsvp.bringingItems.forEach(item => {
-        switch (item) {
-          case 'Drinks':
-            if (rsvp.drinksDetails) {
-              summary.drinks.push(`${rsvp.name}: ${rsvp.drinksDetails}`);
-            }
-            break;
-          case 'Snacks':
-            if (rsvp.snacksDetails) {
-              summary.snacks.push(`${rsvp.name}: ${rsvp.snacksDetails}`);
-            }
-            break;
-          case 'Other':
-            if (rsvp.otherDetails) {
-              summary.other.push(`${rsvp.name}: ${rsvp.otherDetails}`);
-            }
-            break;
-        }
-      });
-    }
-  });
-
-  return summary;
-};
 
 const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
   const [formData, setFormData] = useState<RSVPData>({
@@ -118,7 +32,22 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
   });
 
   useEffect(() => {
-    setCategorySummary(getCategorySummary());
+    const loadCategorySummary = async () => {
+      try {
+        const summary = await getCategorySummary();
+        setCategorySummary(summary);
+      } catch (error) {
+        console.error('Failed to load category summary:', error);
+        // Set empty summary as fallback
+        setCategorySummary({
+          drinks: [],
+          snacks: [],
+          other: []
+        });
+      }
+    };
+
+    loadCategorySummary();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -134,14 +63,21 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
     e.preventDefault();
     console.log('RSVP Data:', formData);
     
-    saveRSVP(formData);
-    
-    const emailData: RSVPEmailData = {
-      ...formData,
-      timestamp: Date.now()
-    };
-    
     try {
+      // Save RSVP data
+      const saveSuccess = await saveRSVP(formData);
+      
+      if (saveSuccess) {
+        console.log('RSVP saved successfully to API');
+      } else {
+        console.warn('RSVP saved to localStorage (API not available)');
+      }
+      
+      const emailData: RSVPEmailData = {
+        ...formData,
+        timestamp: Date.now()
+      };
+      
       // Send notification to organizers
       const notificationSent = await sendRSVPNotification(emailData);
       if (notificationSent) {
@@ -157,12 +93,15 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
       } else {
         console.warn('Failed to send confirmation email, but RSVP was saved');
       }
+
+      // Refresh category summary
+      const updatedSummary = await getCategorySummary();
+      setCategorySummary(updatedSummary);
+      
     } catch (error) {
-      console.error('Error sending emails:', error);
-      // Don't prevent form submission if email fails
+      console.error('Error processing RSVP:', error);
+      // Still show success message even if there were issues
     }
-    
-    setCategorySummary(getCategorySummary());
     
     setIsSubmitted(true);
   };

@@ -1,93 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
 import { Cross2Icon, DownloadIcon, PersonIcon, CalendarIcon, StarIcon, TrashIcon } from '@radix-ui/react-icons';
+import { getRSVPs, deleteRSVP, getCategorySummary, StoredRSVP, CategorySummary, getStorageMethod } from '../services/dataService';
 
-interface StoredRSVP {
-  id: string;
-  timestamp: number;
-  name: string;
-  email: string;
-  attending: boolean;
-  guestCount: number;
-  dietaryRestrictions: string;
-  bringingItems: string[];
-  drinksDetails: string;
-  snacksDetails: string;
-  otherDetails: string;
-}
-
-interface CategorySummary {
-  drinks: string[];
-  snacks: string[];
-  other: string[];
-}
 
 interface AdminProps {
   onClose: () => void;
 }
 
-const STORAGE_KEY = 'halloween-party-rsvps';
-
-const getStoredRSVPs = (): StoredRSVP[] => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-    
-    const parsed = JSON.parse(stored);
-    return parsed.map((rsvp: any) => ({
-      ...rsvp,
-      guestCount: Number(rsvp.guestCount) || 1
-    }));
-  } catch (error) {
-    console.error('Error reading from localStorage:', error);
-    return [];
-  }
-};
-
-const getCategorySummary = (): CategorySummary => {
-  const rsvps = getStoredRSVPs();
-  const summary: CategorySummary = {
-    drinks: [],
-    snacks: [],
-    other: []
-  };
-
-  rsvps.forEach(rsvp => {
-    if (rsvp.attending) {
-      rsvp.bringingItems.forEach(item => {
-        switch (item) {
-          case 'Drinks':
-            if (rsvp.drinksDetails) {
-              summary.drinks.push(`${rsvp.name}: ${rsvp.drinksDetails}`);
-            }
-            break;
-          case 'Snacks':
-            if (rsvp.snacksDetails) {
-              summary.snacks.push(`${rsvp.name}: ${rsvp.snacksDetails}`);
-            }
-            break;
-          case 'Other':
-            if (rsvp.otherDetails) {
-              summary.other.push(`${rsvp.name}: ${rsvp.otherDetails}`);
-            }
-            break;
-        }
-      });
-    }
-  });
-
-  return summary;
-};
-
-const deleteRSVP = (rsvpId: string): void => {
-  try {
-    const storedRSVPs = getStoredRSVPs();
-    const updatedRSVPs = storedRSVPs.filter(rsvp => rsvp.id !== rsvpId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRSVPs));
-  } catch (error) {
-    console.error('Error deleting RSVP:', error);
-  }
-};
 
 const Admin: React.FC<AdminProps> = ({ onClose }) => {
   const [rsvps, setRsvps] = useState<StoredRSVP[]>([]);
@@ -99,10 +19,27 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'summary'>('overview');
 
   useEffect(() => {
-    const storedRsvps = getStoredRSVPs();
-    const summary = getCategorySummary();
-    setRsvps(storedRsvps);
-    setCategorySummary(summary);
+    const loadData = async () => {
+      try {
+        const [storedRsvps, summary] = await Promise.all([
+          getRSVPs(),
+          getCategorySummary()
+        ]);
+        setRsvps(storedRsvps);
+        setCategorySummary(summary);
+      } catch (error) {
+        console.error('Failed to load admin data:', error);
+        // Set empty data as fallback
+        setRsvps([]);
+        setCategorySummary({
+          drinks: [],
+          snacks: [],
+          other: []
+        });
+      }
+    };
+
+    loadData();
   }, []);
 
   const exportData = () => {
@@ -130,19 +67,33 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
     return new Date(timestamp).toLocaleString();
   };
 
-  const handleDeleteRSVP = (rsvpId: string) => {
+  const handleDeleteRSVP = async (rsvpId: string) => {
     if (window.confirm('Are you sure you want to delete this RSVP? This action cannot be undone.')) {
-      deleteRSVP(rsvpId);
-      // Refresh the data
-      const storedRsvps = getStoredRSVPs();
-      const summary = getCategorySummary();
-      setRsvps(storedRsvps);
-      setCategorySummary(summary);
+      try {
+        const deleteSuccess = await deleteRSVP(rsvpId);
+        
+        if (deleteSuccess) {
+          console.log('RSVP deleted successfully from API');
+        } else {
+          console.warn('RSVP deleted from localStorage (API not available)');
+        }
+
+        // Refresh the data
+        const [storedRsvps, summary] = await Promise.all([
+          getRSVPs(),
+          getCategorySummary()
+        ]);
+        setRsvps(storedRsvps);
+        setCategorySummary(summary);
+      } catch (error) {
+        console.error('Failed to delete RSVP:', error);
+      }
     }
   };
 
   const attendingRsvps = rsvps.filter(r => r.attending);
   const totalGuests = attendingRsvps.reduce((sum, r) => sum + Number(r.guestCount), 0);
+  const storageMethod = getStorageMethod();
 
   return (
     <div className="admin-overlay">
@@ -153,6 +104,11 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
             Admin Dashboard
           </h2>
           <div className="admin-actions">
+            <div className="storage-indicator">
+              <span className={`storage-badge ${storageMethod}`}>
+                {storageMethod === 'api' ? '🌐 API Storage' : '💾 Local Storage'}
+              </span>
+            </div>
             <button className="export-button" onClick={exportData}>
               <DownloadIcon className="icon" />
               Export Data

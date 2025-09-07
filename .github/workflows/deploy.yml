@@ -35,6 +35,8 @@ jobs:
       run: npm run build
       env:
         REACT_APP_EMAILJS_PUBLIC_KEY: ${{ secrets.REACT_APP_EMAILJS_PUBLIC_KEY }}
+        REACT_APP_JSONBIN_API_KEY: ${{ secrets.REACT_APP_JSONBIN_API_KEY }}
+        REACT_APP_JSONBIN_BIN_ID: ${{ secrets.REACT_APP_JSONBIN_BIN_ID }}
       
     - name: Setup Pages
       uses: actions/configure-pages@v4
