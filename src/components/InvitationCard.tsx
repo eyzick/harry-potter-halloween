@@ -47,25 +47,25 @@ const InvitationCard: React.FC = () => {
               <span className="detail-label">
                 <CalendarIcon className="icon" /> Date:
               </span>
-              <span className="detail-value">October 31st, 2024</span>
+              <span className="detail-value">October 31st, 2025</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">
                 <ClockIcon className="icon" /> Time:
               </span>
-              <span className="detail-value">7:00 PM - Midnight</span>
+              <span className="detail-value">8:00 PM</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">
                 <HomeIcon className="icon" /> Location:
               </span>
-              <span className="detail-value">123 Diagon Alley, Hogsmeade</span>
+              <span className="detail-value">1212 Summerfield Dr, Herndon VA 20170</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">
                 <StarIcon className="icon" /> Dress Code:
               </span>
-              <span className="detail-value">Wizarding World Costumes Encouraged!</span>
+              <span className="detail-value">In costume! Magical dressware optional.</span>
             </div>
           </div>
 

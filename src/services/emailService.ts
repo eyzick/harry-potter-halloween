@@ -3,9 +3,13 @@ import emailjs from '@emailjs/browser';
 // EmailJS configuration
 const EMAILJS_SERVICE_ID = 'service_ekdqhnd';
 const EMAILJS_TEMPLATE_ID = 'template_l0xqkzl';
-const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+const EMAILJS_CONFIRMATION_TEMPLATE_ID = 'template_ya1y8zy';
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
-// Recipient emails
+if (!EMAILJS_PUBLIC_KEY) {
+  console.error('REACT_APP_EMAILJS_PUBLIC_KEY environment variable is not set. Please configure it in your GitHub Pages secrets.');
+}
+
 const RECIPIENT_EMAILS = ['meganannben@gmail.com'];
 
 export interface RSVPEmailData {
@@ -23,10 +27,13 @@ export interface RSVPEmailData {
 
 export const sendRSVPNotification = async (rsvpData: RSVPEmailData): Promise<boolean> => {
   try {
-    // Initialize EmailJS with your public key
+    if (!EMAILJS_PUBLIC_KEY) {
+      console.error('EmailJS public key not configured. Cannot send notification email.');
+      return false;
+    }
+
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    // Format the bringing items for email
     const bringingItemsText = rsvpData.bringingItems.length > 0 
       ? rsvpData.bringingItems.map(item => {
           switch (item) {
@@ -42,7 +49,6 @@ export const sendRSVPNotification = async (rsvpData: RSVPEmailData): Promise<boo
         }).join('\n')
       : 'None';
 
-    // Format the email content
     const emailContent = `
 New RSVP Submission for Harry Potter Halloween Party
 
@@ -118,6 +124,62 @@ export const sendRSVPNotificationBackend = async (rsvpData: RSVPEmailData): Prom
     return true;
   } catch (error) {
     console.error('Failed to send RSVP notification email via backend:', error);
+    return false;
+  }
+};
+
+export const sendRSVPConfirmation = async (rsvpData: RSVPEmailData): Promise<boolean> => {
+  try {
+    // Check if EmailJS public key is available
+    if (!EMAILJS_PUBLIC_KEY) {
+      console.error('EmailJS public key not configured. Cannot send confirmation email.');
+      return false;
+    }
+
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    const bringingItemsText = rsvpData.bringingItems.length > 0 
+      ? rsvpData.bringingItems.map(item => {
+          switch (item) {
+            case 'Drinks':
+              return `• Drinks: ${rsvpData.drinksDetails || 'No details provided'}`;
+            case 'Snacks':
+              return `• Snacks: ${rsvpData.snacksDetails || 'No details provided'}`;
+            case 'Other':
+              return `• Other: ${rsvpData.otherDetails || 'No details provided'}`;
+            default:
+              return `• ${item}`;
+          }
+        }).join('\n')
+      : 'None';
+
+    const partyDate = 'October 31st, 2025'; 
+    const partyTime = '8:00 PM'; 
+    const partyAddress = '1212 Summerfield Dr, Herndon VA 20170';
+
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_CONFIRMATION_TEMPLATE_ID,
+      {
+        to_email: rsvpData.email,
+        from_name: 'Harry Potter Halloween Party',
+        subject: `RSVP Confirmation - Harry Potter Halloween Party`,
+        guest_name: rsvpData.name,
+        attending_status: rsvpData.attending ? 'Yes' : 'No',
+        guest_count: rsvpData.guestCount,
+        dietary_restrictions: rsvpData.dietaryRestrictions || 'None',
+        bringing_items: bringingItemsText,
+        party_date: partyDate,
+        party_time: partyTime,
+        party_address: partyAddress,
+        submission_time: new Date(rsvpData.timestamp).toLocaleString()
+      }
+    );
+    
+    console.log('RSVP confirmation email sent successfully');
+    return true;
+  } catch (error) {
+    console.error('Failed to send RSVP confirmation email:', error);
     return false;
   }
 };
