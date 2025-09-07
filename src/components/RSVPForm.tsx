@@ -24,6 +24,7 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBringModalOpen, setIsBringModalOpen] = useState(false);
   const [categorySummary, setCategorySummary] = useState<CategorySummary>({
     drinks: [],
@@ -61,6 +62,13 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      return;
+    }
+    
+    setIsSubmitting(true);
     console.log('RSVP Data:', formData);
     
     try {
@@ -101,6 +109,8 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
     } catch (error) {
       console.error('Error processing RSVP:', error);
       // Still show success message even if there were issues
+    } finally {
+      setIsSubmitting(false);
     }
     
     setIsSubmitted(true);
@@ -249,8 +259,8 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
           </>
         )}
 
-        <button type="submit" className="submit-button">
-          Send RSVP
+        <button type="submit" className="submit-button" disabled={isSubmitting}>
+          {isSubmitting ? 'Sending RSVP...' : 'Send RSVP'}
         </button>
       </form>
 
