@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './RSVPForm.css';
 import { Cross2Icon, StarFilledIcon, StarIcon, CircleIcon, CookieIcon } from '@radix-ui/react-icons';
-import { sendRSVPNotification, RSVPEmailData } from '../services/emailService';
+import { sendRSVPNotification, sendRSVPConfirmation, RSVPEmailData } from '../services/emailService';
 
 interface RSVPData {
   name: string;
@@ -142,14 +142,23 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
     };
     
     try {
-      const emailSent = await sendRSVPNotification(emailData);
-      if (emailSent) {
+      // Send notification to organizers
+      const notificationSent = await sendRSVPNotification(emailData);
+      if (notificationSent) {
         console.log('Email notification sent successfully');
       } else {
         console.warn('Failed to send email notification, but RSVP was saved');
       }
+
+      // Send confirmation to the guest
+      const confirmationSent = await sendRSVPConfirmation(emailData);
+      if (confirmationSent) {
+        console.log('Confirmation email sent successfully');
+      } else {
+        console.warn('Failed to send confirmation email, but RSVP was saved');
+      }
     } catch (error) {
-      console.error('Error sending email notification:', error);
+      console.error('Error sending emails:', error);
       // Don't prevent form submission if email fails
     }
     

@@ -130,12 +130,15 @@ export const sendRSVPNotificationBackend = async (rsvpData: RSVPEmailData): Prom
 
 export const sendRSVPConfirmation = async (rsvpData: RSVPEmailData): Promise<boolean> => {
   try {
+    console.log('Starting RSVP confirmation email process...');
+    
     // Check if EmailJS public key is available
     if (!EMAILJS_PUBLIC_KEY) {
       console.error('EmailJS public key not configured. Cannot send confirmation email.');
       return false;
     }
 
+    console.log('EmailJS public key found, initializing...');
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
     const bringingItemsText = rsvpData.bringingItems.length > 0 
@@ -156,6 +159,9 @@ export const sendRSVPConfirmation = async (rsvpData: RSVPEmailData): Promise<boo
     const partyDate = 'October 31st, 2025'; 
     const partyTime = '8:00 PM'; 
     const partyAddress = '1212 Summerfield Dr, Herndon VA 20170';
+
+    console.log('Sending confirmation email to:', rsvpData.email);
+    console.log('Using template ID:', EMAILJS_CONFIRMATION_TEMPLATE_ID);
 
     await emailjs.send(
       EMAILJS_SERVICE_ID,
