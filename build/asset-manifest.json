@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.bc4e2606.css",
-    "main.js": "/static/js/main.86f4151c.js",
-    "index.html": "/index.html",
-    "main.bc4e2606.css.map": "/static/css/main.bc4e2606.css.map",
-    "main.86f4151c.js.map": "/static/js/main.86f4151c.js.map"
+    "main.css": "/Halloween/static/css/main.1699e49a.css",
+    "main.js": "/Halloween/static/js/main.0ae03c6e.js",
+    "index.html": "/Halloween/index.html",
+    "main.1699e49a.css.map": "/Halloween/static/css/main.1699e49a.css.map",
+    "main.0ae03c6e.js.map": "/Halloween/static/js/main.0ae03c6e.js.map"
   },
   "entrypoints": [
-    "static/css/main.bc4e2606.css",
-    "static/js/main.86f4151c.js"
+    "static/css/main.1699e49a.css",
+    "static/js/main.0ae03c6e.js"
   ]
 }
