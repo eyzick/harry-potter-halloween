@@ -13,6 +13,26 @@ A magical React TypeScript website for sending out Harry Potter themed Halloween
 - 🌐 **Persistent data storage** - RSVPs work across different browsers and devices
 - 📊 Admin panel with real-time RSVP management
 - 📧 Email notifications for RSVPs
+- 📱 **Mobile admin access** - Easy URL-based admin dashboard access
+
+## Mobile Admin Access
+
+For easy mobile access to the admin dashboard:
+
+### **Direct Access (No Password)**
+Add `?admin=direct` to your URL:
+```
+https://yourusername.github.io/halloween-party/?admin=direct
+```
+
+### **Password-Protected Access**
+Add `?admin=true` to your URL:
+```
+https://yourusername.github.io/halloween-party/?admin=true
+```
+
+### **Desktop Shortcut**
+Press `Ctrl+Shift+A` to open the admin panel
 
 ## Getting Started
 

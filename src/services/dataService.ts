@@ -48,7 +48,7 @@ const saveRSVPToAPI = async (rsvpData: RSVPData): Promise<boolean> => {
     const updatedRSVPs = [...existingRSVPs, newRSVP];
 
     // Try to maintain the original format, but default to array if we can't determine it
-    let dataToSave = updatedRSVPs;
+    let dataToSave: StoredRSVP[] | { rsvps: StoredRSVP[] } | { data: StoredRSVP[] } = updatedRSVPs;
     
     // If we have existing data, try to preserve the format
     try {
