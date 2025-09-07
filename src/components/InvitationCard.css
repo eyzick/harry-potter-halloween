@@ -1,0 +1,270 @@
+/* Invitation Card Styles */
+.invitation-card {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem 0;
+  perspective: 1000px;
+}
+
+.card-border {
+  background: linear-gradient(45deg, #740001, #ae0001, #eeba30, #d3a625);
+  padding: 8px;
+  border-radius: 20px;
+  box-shadow: 
+    0 0 20px rgba(238, 186, 48, 0.2),
+    0 0 40px rgba(174, 0, 1, 0.1),
+    inset 0 0 15px rgba(255, 255, 255, 0.1);
+  animation: cardGlow 8s ease-in-out infinite alternate;
+  will-change: box-shadow;
+}
+
+@keyframes cardGlow {
+  0% {
+    box-shadow: 
+      0 0 20px rgba(238, 186, 48, 0.2),
+      0 0 40px rgba(174, 0, 1, 0.1),
+      inset 0 0 15px rgba(255, 255, 255, 0.1);
+  }
+  100% {
+    box-shadow: 
+      0 0 25px rgba(238, 186, 48, 0.25),
+      0 0 45px rgba(174, 0, 1, 0.12),
+      inset 0 0 18px rgba(255, 255, 255, 0.12);
+  }
+}
+
+.card-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  padding: 3rem 2rem;
+  border-radius: 15px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-content::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(238, 186, 48, 0.1) 0%, transparent 70%);
+  animation: rotate 60s linear infinite;
+  pointer-events: none;
+  will-change: transform;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Hogwarts Crest */
+.hogwarts-crest {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.crest-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  background: transparent;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  animation: crestGlow 6s ease-in-out infinite;
+  transition: transform 0.3s ease;
+  mix-blend-mode: normal;
+}
+
+.crest-image:hover {
+  transform: scale(1.05);
+}
+
+@keyframes crestGlow {
+  0%, 100% { 
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 10px rgba(238, 186, 48, 0.3));
+  }
+  50% { 
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(238, 186, 48, 0.6));
+  }
+}
+
+/* Typography */
+.invitation-title {
+  font-family: 'Cinzel', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #eeba30;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  animation: titleGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  0% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(238, 186, 48, 0.3); }
+  100% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(238, 186, 48, 0.6); }
+}
+
+.party-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #f4f1de;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Invitation Details */
+.invitation-details {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid #eeba30;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #eeba30;
+  font-size: 1.1rem;
+}
+
+.detail-value {
+  color: #f4f1de;
+  font-size: 1rem;
+}
+
+/* Party Description */
+.party-description {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.party-description p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #f4f1de;
+  text-align: center;
+}
+
+.party-description ul {
+  list-style: none;
+  padding: 0;
+}
+
+.party-description li {
+  margin: 0.8rem 0;
+  padding: 0.5rem;
+  background: rgba(238, 186, 48, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid #eeba30;
+  font-size: 1.1rem;
+  color: #f4f1de;
+  animation: listItemSlide 0.5s ease-out;
+}
+
+@keyframes listItemSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* RSVP Section */
+.rsvp-section {
+  margin-top: 2rem;
+}
+
+.rsvp-button {
+  background: linear-gradient(45deg, #740001, #ae0001);
+  color: #f4f1de;
+  border: 2px solid #eeba30;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.rsvp-button:hover {
+  background: linear-gradient(45deg, #ae0001, #740001);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(238, 186, 48, 0.4);
+  border-color: #f4f1de;
+}
+
+.rsvp-button:active {
+  transform: translateY(0);
+}
+
+/* RSVP Overlay */
+.rsvp-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: overlaySlideIn 0.6s ease-out;
+}
+
+@keyframes overlaySlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .invitation-title {
+    font-size: 2.5rem;
+  }
+  
+  .party-title {
+    font-size: 1.5rem;
+  }
+  
+  .card-content {
+    padding: 2rem 1rem;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .crest-image {
+    width: 120px;
+    height: 120px;
+  }
+}
