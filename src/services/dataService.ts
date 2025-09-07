@@ -26,14 +26,25 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://api.jsonbin.
 const API_KEY = process.env.REACT_APP_JSONBIN_API_KEY;
 const BIN_ID = process.env.REACT_APP_JSONBIN_BIN_ID || 'your-bin-id';
 
+// Debug logging for API configuration
+console.log('JSONBin.io Configuration:', {
+  API_KEY: API_KEY ? 'Set' : 'Not set',
+  BIN_ID: BIN_ID,
+  API_BASE_URL: API_BASE_URL
+});
+
 // Fallback to localStorage if API is not configured
 const STORAGE_KEY = 'halloween-party-rsvps';
 
 // Backend API functions
 const saveRSVPToAPI = async (rsvpData: RSVPData): Promise<boolean> => {
   try {
+    console.log('Attempting to save RSVP to JSONBin.io...');
+    
     if (!API_KEY || !BIN_ID) {
       console.warn('API credentials not configured, falling back to localStorage');
+      console.log('API_KEY:', API_KEY ? 'Present' : 'Missing');
+      console.log('BIN_ID:', BIN_ID);
       return false;
     }
 
@@ -76,14 +87,17 @@ const saveRSVPToAPI = async (rsvpData: RSVPData): Promise<boolean> => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Master-Key': API_KEY,
-        'X-Bin-Name': 'Halloween Party RSVPs'
+        'X-Master-Key': API_KEY
       },
       body: JSON.stringify(dataToSave)
     });
 
+    console.log('JSONBin.io response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
+      const errorText = await response.text();
+      console.error('JSONBin.io API error:', errorText);
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
     console.log('RSVP saved to API successfully');
