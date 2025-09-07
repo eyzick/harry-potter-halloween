@@ -2,7 +2,7 @@
   "name": "harry-potter-halloween-invitation",
   "version": "1.0.0",
   "description": "A magical Harry Potter themed Halloween party invitation website",
-  "homepage": "https://eyzick.github.io/Halloween",
+  "homepage": "https://eyzick.github.io/harry-potter-halloween",
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
