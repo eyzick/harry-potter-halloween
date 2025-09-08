@@ -72,10 +72,9 @@ const InvitationCard: React.FC = () => {
           <div className="party-description">
             <p>Join us for a magical evening filled with:</p>
             <ul>
-              <li><MixerHorizontalIcon className="icon" /> Potion-making station</li>
-              <li><StarIcon className="icon" /> Pumpkin carving contest</li>
-              <li><CookieIcon className="icon" /> Butterbeer tasting</li>
-              <li><CameraIcon className="icon" /> Costume contest with prizes</li>
+              <li><MixerHorizontalIcon className="icon" /> Potion station</li>
+              <li><CookieIcon className="icon" /> Butterbeer pong</li>
+              <li><CameraIcon className="icon" /> House Cup Competition</li>
               <li><SpeakerLoudIcon className="icon" /> Magical music and dancing</li>
               <li><CookieIcon className="icon" /> Enchanted treats and cauldron cakes</li>
             </ul>
