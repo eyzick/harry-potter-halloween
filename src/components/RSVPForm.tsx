@@ -17,15 +17,18 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
     attending: true,
     guestCount: 1,
     dietaryRestrictions: '',
-    bringingItems: [],
-    drinksDetails: '',
-    snacksDetails: '',
-    otherDetails: ''
+    bringingItems: {
+      drinks: [],
+      snacks: [],
+      other: []
+    }
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBringModalOpen, setIsBringModalOpen] = useState(false);
+  const [newItem, setNewItem] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<'drinks' | 'snacks' | 'other'>('drinks');
   const [categorySummary, setCategorySummary] = useState<CategorySummary>({
     drinks: [],
     snacks: [],
@@ -116,13 +119,34 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
     setIsSubmitted(true);
   };
 
-  const handleBringItemToggle = (item: string) => {
+  const handleAddItem = () => {
+    if (newItem.trim() && !formData.bringingItems[selectedCategory].includes(newItem.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        bringingItems: {
+          ...prev.bringingItems,
+          [selectedCategory]: [...prev.bringingItems[selectedCategory], newItem.trim()]
+        }
+      }));
+      setNewItem('');
+    }
+  };
+
+  const handleRemoveItem = (category: 'drinks' | 'snacks' | 'other', itemToRemove: string) => {
     setFormData(prev => ({
       ...prev,
-      bringingItems: prev.bringingItems.includes(item)
-        ? prev.bringingItems.filter(i => i !== item)
-        : [...prev.bringingItems, item]
+      bringingItems: {
+        ...prev.bringingItems,
+        [category]: prev.bringingItems[category].filter(item => item !== itemToRemove)
+      }
     }));
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddItem();
+    }
   };
 
   const openBringModal = () => {
@@ -231,27 +255,81 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
                 <StarIcon className="icon" />
                 What should I bring?
               </button>
-              {formData.bringingItems.length > 0 && (
+              {(formData.bringingItems.drinks.length > 0 || formData.bringingItems.snacks.length > 0 || formData.bringingItems.other.length > 0) && (
                 <div className="selected-items">
-                  <span className="selected-label">Selected:</span>
+                  <span className="selected-label">Items you're bringing:</span>
                   <div className="selected-items-list">
-                    {formData.bringingItems.map((item, index) => {
-                      let displayText = item;
-                      
-                      if (item === 'Drinks' && formData.drinksDetails) {
-                        displayText = `${item}: ${formData.drinksDetails}`;
-                      } else if (item === 'Snacks' && formData.snacksDetails) {
-                        displayText = `${item}: ${formData.snacksDetails}`;
-                      } else if (item === 'Other' && formData.otherDetails) {
-                        displayText = `${item}: ${formData.otherDetails}`;
-                      }
-                      
-                      return (
-                        <div key={index} className="selected-item">
-                          {displayText}
+                    {formData.bringingItems.drinks.length > 0 && (
+                      <div className="category-section">
+                        <div className="category-header">
+                          <CircleIcon className="category-icon" />
+                          <span className="category-name">Drinks</span>
                         </div>
-                      );
-                    })}
+                        <div className="category-items">
+                          {formData.bringingItems.drinks.map((item, index) => (
+                            <div key={index} className="selected-item">
+                              <span className="item-text">{item}</span>
+                              <button 
+                                type="button"
+                                className="remove-item-button"
+                                onClick={() => handleRemoveItem('drinks', item)}
+                                title="Remove item"
+                              >
+                                <Cross2Icon className="remove-icon" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {formData.bringingItems.snacks.length > 0 && (
+                      <div className="category-section">
+                        <div className="category-header">
+                          <CookieIcon className="category-icon" />
+                          <span className="category-name">Snacks</span>
+                        </div>
+                        <div className="category-items">
+                          {formData.bringingItems.snacks.map((item, index) => (
+                            <div key={index} className="selected-item">
+                              <span className="item-text">{item}</span>
+                              <button 
+                                type="button"
+                                className="remove-item-button"
+                                onClick={() => handleRemoveItem('snacks', item)}
+                                title="Remove item"
+                              >
+                                <Cross2Icon className="remove-icon" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {formData.bringingItems.other.length > 0 && (
+                      <div className="category-section">
+                        <div className="category-header">
+                          <StarIcon className="category-icon" />
+                          <span className="category-name">Other</span>
+                        </div>
+                        <div className="category-items">
+                          {formData.bringingItems.other.map((item, index) => (
+                        <div key={index} className="selected-item">
+                              <span className="item-text">{item}</span>
+                              <button 
+                                type="button"
+                                className="remove-item-button"
+                                onClick={() => handleRemoveItem('other', item)}
+                                title="Remove item"
+                              >
+                                <Cross2Icon className="remove-icon" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -275,8 +353,142 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
             </div>
             <div className="modal-body">
               <p className="modal-description">
-                Help us make this party magical! Choose what you'd like to contribute (optional):
+                Help us make this party magical! Add specific items you'd like to bring (optional):
               </p>
+              
+              <div className="category-selection">
+                <h4 className="category-selection-title">Select Category:</h4>
+                <div className="category-buttons">
+                  <button 
+                    type="button"
+                    className={`category-button ${selectedCategory === 'drinks' ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory('drinks')}
+                  >
+                    <CircleIcon className="icon" />
+                    Drinks
+                  </button>
+                  <button 
+                    type="button"
+                    className={`category-button ${selectedCategory === 'snacks' ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory('snacks')}
+                  >
+                    <CookieIcon className="icon" />
+                    Snacks
+                  </button>
+                  <button 
+                    type="button"
+                    className={`category-button ${selectedCategory === 'other' ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory('other')}
+                  >
+                    <StarIcon className="icon" />
+                    Other
+                  </button>
+                </div>
+              </div>
+              
+              <div className="add-item-section">
+                <div className="add-item-input-container">
+                  <input
+                    type="text"
+                    placeholder={`What ${selectedCategory} would you like to bring? (e.g., wine, beer, cookies...)`}
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="add-item-input"
+                  />
+                  <button 
+                    type="button"
+                    className="add-item-button"
+                    onClick={handleAddItem}
+                    disabled={!newItem.trim()}
+                  >
+                    <StarIcon className="icon" />
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              {(formData.bringingItems.drinks.length > 0 || formData.bringingItems.snacks.length > 0 || formData.bringingItems.other.length > 0) && (
+                <div className="current-items-section">
+                  <h4 className="current-items-title">
+                    <StarIcon className="icon" />
+                    Items you're bringing:
+                  </h4>
+                  <div className="current-items-list">
+                    {formData.bringingItems.drinks.length > 0 && (
+                      <div className="current-category-section">
+                        <div className="current-category-header">
+                          <CircleIcon className="category-icon" />
+                          <span className="category-name">Drinks</span>
+                        </div>
+                        <div className="current-category-items">
+                          {formData.bringingItems.drinks.map((item, index) => (
+                            <div key={index} className="current-item">
+                              <span className="item-text">{item}</span>
+                              <button 
+                                type="button"
+                                className="remove-item-button"
+                                onClick={() => handleRemoveItem('drinks', item)}
+                                title="Remove item"
+                              >
+                                <Cross2Icon className="remove-icon" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {formData.bringingItems.snacks.length > 0 && (
+                      <div className="current-category-section">
+                        <div className="current-category-header">
+                          <CookieIcon className="category-icon" />
+                          <span className="category-name">Snacks</span>
+                        </div>
+                        <div className="current-category-items">
+                          {formData.bringingItems.snacks.map((item, index) => (
+                            <div key={index} className="current-item">
+                              <span className="item-text">{item}</span>
+                              <button 
+                                type="button"
+                                className="remove-item-button"
+                                onClick={() => handleRemoveItem('snacks', item)}
+                                title="Remove item"
+                              >
+                                <Cross2Icon className="remove-icon" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {formData.bringingItems.other.length > 0 && (
+                      <div className="current-category-section">
+                        <div className="current-category-header">
+                          <StarIcon className="category-icon" />
+                          <span className="category-name">Other</span>
+                        </div>
+                        <div className="current-category-items">
+                          {formData.bringingItems.other.map((item, index) => (
+                            <div key={index} className="current-item">
+                              <span className="item-text">{item}</span>
+                              <button 
+                                type="button"
+                                className="remove-item-button"
+                                onClick={() => handleRemoveItem('other', item)}
+                                title="Remove item"
+                              >
+                                <Cross2Icon className="remove-icon" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
               {(categorySummary.drinks.length > 0 || categorySummary.snacks.length > 0 || 
                 categorySummary.other.length > 0) && (
@@ -329,86 +541,6 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
                   )}
                 </div>
               )}
-              
-              <div className="bring-options">
-                <div className="bring-option-container">
-                  <label className="bring-option" data-tooltip={categorySummary.drinks.length > 0 ? categorySummary.drinks.join('\n') : 'No drinks planned yet'}>
-                    <input
-                      type="checkbox"
-                      checked={formData.bringingItems.includes('Drinks')}
-                      onChange={() => handleBringItemToggle('Drinks')}
-                    />
-                    <CircleIcon className="option-icon" />
-                    <span>Drinks</span>
-                    {categorySummary.drinks.length > 0 && (
-                      <span className="tooltip-indicator">({categorySummary.drinks.length})</span>
-                    )}
-                  </label>
-                  {formData.bringingItems.includes('Drinks') && (
-                    <div className="option-details">
-                      <input
-                        type="text"
-                        placeholder="What drinks will you bring? (e.g., Butterbeer, Pumpkin Juice, etc.)"
-                        value={formData.drinksDetails}
-                        onChange={(e) => setFormData(prev => ({ ...prev, drinksDetails: e.target.value }))}
-                        className="details-input"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="bring-option-container">
-                  <label className="bring-option" data-tooltip={categorySummary.snacks.length > 0 ? categorySummary.snacks.join('\n') : 'No snacks planned yet'}>
-                    <input
-                      type="checkbox"
-                      checked={formData.bringingItems.includes('Snacks')}
-                      onChange={() => handleBringItemToggle('Snacks')}
-                    />
-                    <CookieIcon className="option-icon" />
-                    <span>Snacks</span>
-                    {categorySummary.snacks.length > 0 && (
-                      <span className="tooltip-indicator">({categorySummary.snacks.length})</span>
-                    )}
-                  </label>
-                  {formData.bringingItems.includes('Snacks') && (
-                    <div className="option-details">
-                      <input
-                        type="text"
-                        placeholder="What snacks will you bring? (e.g., Chocolate Frogs, Bertie Bott's Beans, etc.)"
-                        value={formData.snacksDetails}
-                        onChange={(e) => setFormData(prev => ({ ...prev, snacksDetails: e.target.value }))}
-                        className="details-input"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="bring-option-container">
-                  <label className="bring-option" data-tooltip={categorySummary.other.length > 0 ? categorySummary.other.join('\n') : 'No other items planned yet'}>
-                    <input
-                      type="checkbox"
-                      checked={formData.bringingItems.includes('Other')}
-                      onChange={() => handleBringItemToggle('Other')}
-                    />
-                    <StarIcon className="option-icon" />
-                    <span>Other</span>
-                    {categorySummary.other.length > 0 && (
-                      <span className="tooltip-indicator">({categorySummary.other.length})</span>
-                    )}
-                  </label>
-                  {formData.bringingItems.includes('Other') && (
-                    <div className="option-details">
-                      <input
-                        type="text"
-                        placeholder="What else would you like to bring?"
-                        value={formData.otherDetails}
-                        onChange={(e) => setFormData(prev => ({ ...prev, otherDetails: e.target.value }))}
-                        className="details-input"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
             <div className="modal-footer">
               <button className="modal-confirm-button" onClick={closeBringModal}>

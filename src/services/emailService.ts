@@ -18,10 +18,11 @@ export interface RSVPEmailData {
   attending: boolean;
   guestCount: number;
   dietaryRestrictions: string;
-  bringingItems: string[];
-  drinksDetails: string;
-  snacksDetails: string;
-  otherDetails: string;
+  bringingItems: {
+    drinks: string[];
+    snacks: string[];
+    other: string[];
+  };
   timestamp: number;
 }
 
@@ -34,20 +35,22 @@ export const sendRSVPNotification = async (rsvpData: RSVPEmailData): Promise<boo
 
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    const bringingItemsText = rsvpData.bringingItems.length > 0 
-      ? rsvpData.bringingItems.map(item => {
-          switch (item) {
-            case 'Drinks':
-              return `• Drinks: ${rsvpData.drinksDetails || 'No details provided'}`;
-            case 'Snacks':
-              return `• Snacks: ${rsvpData.snacksDetails || 'No details provided'}`;
-            case 'Other':
-              return `• Other: ${rsvpData.otherDetails || 'No details provided'}`;
-            default:
-              return `• ${item}`;
-          }
-        }).join('\n')
-      : 'None';
+    const bringingItemsText = (() => {
+      const items = [];
+      if (rsvpData.bringingItems.drinks.length > 0) {
+        items.push('Drinks:');
+        rsvpData.bringingItems.drinks.forEach(item => items.push(`  • ${item}`));
+      }
+      if (rsvpData.bringingItems.snacks.length > 0) {
+        items.push('Snacks:');
+        rsvpData.bringingItems.snacks.forEach(item => items.push(`  • ${item}`));
+      }
+      if (rsvpData.bringingItems.other.length > 0) {
+        items.push('Other:');
+        rsvpData.bringingItems.other.forEach(item => items.push(`  • ${item}`));
+      }
+      return items.length > 0 ? items.join('\n') : 'None';
+    })();
 
     const emailContent = `
 New RSVP Submission for Harry Potter Halloween Party
@@ -141,20 +144,22 @@ export const sendRSVPConfirmation = async (rsvpData: RSVPEmailData): Promise<boo
     console.log('EmailJS public key found, initializing...');
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    const bringingItemsText = rsvpData.bringingItems.length > 0 
-      ? rsvpData.bringingItems.map(item => {
-          switch (item) {
-            case 'Drinks':
-              return `• Drinks: ${rsvpData.drinksDetails || 'No details provided'}`;
-            case 'Snacks':
-              return `• Snacks: ${rsvpData.snacksDetails || 'No details provided'}`;
-            case 'Other':
-              return `• Other: ${rsvpData.otherDetails || 'No details provided'}`;
-            default:
-              return `• ${item}`;
-          }
-        }).join('\n')
-      : 'None';
+    const bringingItemsText = (() => {
+      const items = [];
+      if (rsvpData.bringingItems.drinks.length > 0) {
+        items.push('Drinks:');
+        rsvpData.bringingItems.drinks.forEach(item => items.push(`  • ${item}`));
+      }
+      if (rsvpData.bringingItems.snacks.length > 0) {
+        items.push('Snacks:');
+        rsvpData.bringingItems.snacks.forEach(item => items.push(`  • ${item}`));
+      }
+      if (rsvpData.bringingItems.other.length > 0) {
+        items.push('Other:');
+        rsvpData.bringingItems.other.forEach(item => items.push(`  • ${item}`));
+      }
+      return items.length > 0 ? items.join('\n') : 'None';
+    })();
 
     const partyDate = 'October 31st, 2025'; 
     const partyTime = '8:00 PM'; 

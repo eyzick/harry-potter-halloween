@@ -237,21 +237,40 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
                       <p><strong>Guests:</strong> {rsvp.guestCount}</p>
                       <p><strong>Submitted:</strong> {formatDate(rsvp.timestamp)}</p>
                       {rsvp.dietaryRestrictions && <p><strong>Dietary:</strong> {rsvp.dietaryRestrictions}</p>}
-                      {rsvp.bringingItems.length > 0 && (
+                      {(rsvp.bringingItems.drinks.length > 0 || rsvp.bringingItems.snacks.length > 0 || rsvp.bringingItems.other.length > 0) && (
                         <div className="bringing-items">
                           <strong>Bringing:</strong>
                           <ul>
-                            {rsvp.bringingItems.map((item, index) => {
-                              let displayText = item;
-                              if (item === 'Drinks' && rsvp.drinksDetails) {
-                                displayText = `${item}: ${rsvp.drinksDetails}`;
-                              } else if (item === 'Snacks' && rsvp.snacksDetails) {
-                                displayText = `${item}: ${rsvp.snacksDetails}`;
-                              } else if (item === 'Other' && rsvp.otherDetails) {
-                                displayText = `${item}: ${rsvp.otherDetails}`;
-                              }
-                              return <li key={index}>{displayText}</li>;
-                            })}
+                            {rsvp.bringingItems.drinks.length > 0 && (
+                              <li>
+                                <strong>Drinks:</strong>
+                                <ul>
+                                  {rsvp.bringingItems.drinks.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </li>
+                            )}
+                            {rsvp.bringingItems.snacks.length > 0 && (
+                              <li>
+                                <strong>Snacks:</strong>
+                                <ul>
+                                  {rsvp.bringingItems.snacks.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </li>
+                            )}
+                            {rsvp.bringingItems.other.length > 0 && (
+                              <li>
+                                <strong>Other:</strong>
+                                <ul>
+                                  {rsvp.bringingItems.other.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </li>
+                            )}
                           </ul>
                         </div>
                       )}

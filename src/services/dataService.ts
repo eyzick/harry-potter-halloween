@@ -4,10 +4,11 @@ export interface RSVPData {
   attending: boolean;
   guestCount: number;
   dietaryRestrictions: string;
-  bringingItems: string[];
-  drinksDetails: string;
-  snacksDetails: string;
-  otherDetails: string;
+  bringingItems: {
+    drinks: string[];
+    snacks: string[];
+    other: string[];
+  };
 }
 
 export interface StoredRSVP extends RSVPData {
@@ -176,24 +177,19 @@ export const getCategorySummary = async (): Promise<CategorySummary> => {
 
   rsvps.forEach(rsvp => {
     if (rsvp.attending) {
-      rsvp.bringingItems.forEach(item => {
-        switch (item) {
-          case 'Drinks':
-            if (rsvp.drinksDetails) {
-              summary.drinks.push(`${rsvp.name}: ${rsvp.drinksDetails}`);
-            }
-            break;
-          case 'Snacks':
-            if (rsvp.snacksDetails) {
-              summary.snacks.push(`${rsvp.name}: ${rsvp.snacksDetails}`);
-            }
-            break;
-          case 'Other':
-            if (rsvp.otherDetails) {
-              summary.other.push(`${rsvp.name}: ${rsvp.otherDetails}`);
-            }
-            break;
-        }
+      // Handle drinks
+      rsvp.bringingItems.drinks.forEach(item => {
+        summary.drinks.push(`${rsvp.name}: ${item}`);
+      });
+      
+      // Handle snacks
+      rsvp.bringingItems.snacks.forEach(item => {
+        summary.snacks.push(`${rsvp.name}: ${item}`);
+      });
+      
+      // Handle other items
+      rsvp.bringingItems.other.forEach(item => {
+        summary.other.push(`${rsvp.name}: ${item}`);
       });
     }
   });
