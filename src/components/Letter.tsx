@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import './Letter.css';
 import { StarFilledIcon, StarIcon } from '@radix-ui/react-icons';
 
@@ -13,6 +13,7 @@ const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
   const [showOwl, setShowOwl] = useState(false);
   const [owlDelivered, setOwlDelivered] = useState(false);
   const [letterAppeared, setLetterAppeared] = useState(false);
+  const owlRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,6 +43,7 @@ const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
       return () => clearTimeout(timer);
     }
   }, [owlDelivered]);
+
 
   const handleLetterClick = useCallback(() => {
     if (!owlDelivered) return;
@@ -121,6 +123,7 @@ const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
       {showOwl && (
         <div className="owl-delivery">
           <img 
+            ref={owlRef}
             src={`${process.env.PUBLIC_URL}/hedwig.gif`} 
             alt="Hedwig delivering letter" 
             className="owl-gif"
