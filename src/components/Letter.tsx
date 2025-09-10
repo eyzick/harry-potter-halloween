@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './Letter.css';
 import { StarFilledIcon, StarIcon } from '@radix-ui/react-icons';
 
@@ -10,8 +10,42 @@ interface LetterProps {
 const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
+  const [showOwl, setShowOwl] = useState(false);
+  const [owlDelivered, setOwlDelivered] = useState(false);
+  const [letterAppeared, setLetterAppeared] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowOwl(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (showOwl) {
+      const timer = setTimeout(() => {
+        setOwlDelivered(true);
+        setShowOwl(false);
+      }, 6000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showOwl]);
+
+  useEffect(() => {
+    if (owlDelivered) {
+      const timer = setTimeout(() => {
+        setLetterAppeared(true);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [owlDelivered]);
 
   const handleLetterClick = useCallback(() => {
+    if (!owlDelivered) return;
+    
     if (onLetterClick) {
       onLetterClick();
     }
@@ -23,7 +57,7 @@ const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
     setTimeout(() => {
       onOpen();
     }, 1500);
-  }, [onOpen, onLetterClick]);
+  }, [onOpen, onLetterClick, owlDelivered]);
 
   const handleMouseEnter = useCallback(() => {
     setIsHovered(true);
@@ -35,16 +69,17 @@ const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
 
   return (
     <div className="letter-container">
-      <div 
-        className={`letter ${isHovered ? 'hovered' : ''} ${isOpening ? 'opening' : ''}`}
-        onClick={handleLetterClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      {owlDelivered && (
+        <div 
+          className={`letter ${isHovered ? 'hovered' : ''} ${isOpening ? 'opening' : ''} ${letterAppeared ? 'appeared' : ''}`}
+          onClick={handleLetterClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
         <div className="letter-front">
           <div className="letter-content">
             <div className="recipient-address">
-              <div className="address-line">Mr. or Ms. Guest</div>
+              <div className="address-line">Esteemed Witch or Wizard</div>
               <div className="address-line">The Muggle World</div>
               <div className="address-line">Earth</div>
             </div>
@@ -73,14 +108,25 @@ const Letter: React.FC<LetterProps> = ({ onOpen, onLetterClick }) => {
         <div className="letter-back">
           <div className="envelope-pattern"></div>
         </div>
-      </div>
+        </div>
+      )}
       
       <div className="letter-instructions">
-        <p>Click the letter to open your invitation</p>
+        <p>{owlDelivered ? "Click the letter to open your invitation" : "Waiting for owl delivery..."}</p>
         <div className="magical-sparkles">
           <StarFilledIcon className="icon" />
         </div>
       </div>
+      
+      {showOwl && (
+        <div className="owl-delivery">
+          <img 
+            src={`${process.env.PUBLIC_URL}/hedwig.gif`} 
+            alt="Hedwig delivering letter" 
+            className="owl-gif"
+          />
+        </div>
+      )}
       
       {isOpening && (
         <div className="opening-effects">

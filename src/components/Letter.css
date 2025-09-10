@@ -1,4 +1,3 @@
-/* Icon Styles */
 .icon {
   width: 1.2em;
   height: 1.2em;
@@ -18,7 +17,6 @@
   }
 }
 
-/* Letter/Envelope Styles */
 .letter-container {
   display: flex;
   flex-direction: column;
@@ -35,7 +33,6 @@
   cursor: pointer;
   transform-style: preserve-3d;
   transition: all 0.6s ease-in-out;
-  animation: letterFloat 4s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -49,7 +46,6 @@
   animation: none;
 }
 
-/* Letter Opening Animation */
 .letter.opening {
   animation: letterOpen 1.5s ease-in-out forwards;
 }
@@ -207,7 +203,6 @@
   background-size: 30px 30px, 25px 25px, 20px 20px;
 }
 
-/* Letter Content */
 .letter-content {
   display: flex;
   justify-content: space-between;
@@ -239,7 +234,6 @@
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
 }
 
-/* Wax Seal */
 .wax-seal {
   position: absolute;
   bottom: 1rem;
@@ -309,7 +303,6 @@
   border-radius: 1px;
 }
 
-/* Instructions */
 .letter-instructions {
   margin-top: 2rem;
   text-align: center;
@@ -335,7 +328,6 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Magical Opening Effects */
 .opening-effects {
   position: absolute;
   top: 50%;
@@ -422,7 +414,128 @@
   }
 }
 
-/* Responsive Design */
+.owl-delivery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2000;
+}
+
+.owl-gif {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  animation: owlSwoop 6s linear forwards;
+  transform-origin: center;
+}
+
+@keyframes owlSwoop {
+  0% {
+    top: 20vh;
+    left: -150px;
+    transform: rotate(-30deg) scale(0.6);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  15% {
+    top: 25vh;
+    left: 20vw;
+    transform: rotate(-20deg) scale(0.7);
+  }
+  25% {
+    top: 30vh;
+    left: 40vw;
+    transform: rotate(-10deg) scale(0.8);
+  }
+  35% {
+    top: 35vh;
+    left: 50vw;
+    transform: rotate(0deg) scale(0.9);
+  }
+  40% {
+    top: 32vh;
+    left: 50vw;
+    transform: rotate(2deg) scale(0.9);
+  }
+  45% {
+    top: 38vh;
+    left: 50vw;
+    transform: rotate(-2deg) scale(0.9);
+  }
+  50% {
+    top: 35vh;
+    left: 50vw;
+    transform: rotate(0deg) scale(1);
+  }
+  55% {
+    top: 33vh;
+    left: 50vw;
+    transform: rotate(1deg) scale(1);
+  }
+  60% {
+    top: 37vh;
+    left: 50vw;
+    transform: rotate(-1deg) scale(1);
+  }
+  65% {
+    top: 35vh;
+    left: 50vw;
+    transform: rotate(0deg) scale(1);
+  }
+  70% {
+    top: 30vh;
+    left: 60vw;
+    transform: rotate(10deg) scale(0.9);
+  }
+  80% {
+    top: 25vh;
+    left: 80vw;
+    transform: rotate(20deg) scale(0.8);
+  }
+  90% {
+    top: 20vh;
+    left: 100vw;
+    transform: rotate(30deg) scale(0.6);
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    top: 15vh;
+    left: 120vw;
+    transform: rotate(45deg) scale(0.4);
+    opacity: 0;
+  }
+}
+
+.letter {
+  animation: letterAppear 1s ease-out forwards;
+}
+
+.letter.appeared {
+  animation: letterFloat 4s ease-in-out infinite;
+}
+
+@keyframes letterAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-10px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
 @media (max-width: 768px) {
   .letter {
     width: 320px;
@@ -448,5 +561,91 @@
   
   .letter-instructions {
     font-size: 1rem;
+  }
+  
+  .owl-gif {
+    width: 135px;
+    height: 135px;
+  }
+  
+  @keyframes owlSwoop {
+    0% {
+      top: 15vh;
+      left: -120px;
+      transform: rotate(-30deg) scale(0.4);
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    15% {
+      top: 20vh;
+      left: 15vw;
+      transform: rotate(-20deg) scale(0.5);
+    }
+    25% {
+      top: 25vh;
+      left: 35vw;
+      transform: rotate(-10deg) scale(0.6);
+    }
+    35% {
+      top: 30vh;
+      left: 50vw;
+      transform: rotate(0deg) scale(0.7);
+    }
+    40% {
+      top: 27vh;
+      left: 50vw;
+      transform: rotate(2deg) scale(0.7);
+    }
+    45% {
+      top: 33vh;
+      left: 50vw;
+      transform: rotate(-2deg) scale(0.7);
+    }
+    50% {
+      top: 30vh;
+      left: 50vw;
+      transform: rotate(0deg) scale(0.8);
+    }
+    55% {
+      top: 28vh;
+      left: 50vw;
+      transform: rotate(1deg) scale(0.8);
+    }
+    60% {
+      top: 32vh;
+      left: 50vw;
+      transform: rotate(-1deg) scale(0.8);
+    }
+    65% {
+      top: 30vh;
+      left: 50vw;
+      transform: rotate(0deg) scale(0.8);
+    }
+    70% {
+      top: 25vh;
+      left: 65vw;
+      transform: rotate(10deg) scale(0.7);
+    }
+    80% {
+      top: 20vh;
+      left: 85vw;
+      transform: rotate(20deg) scale(0.6);
+    }
+    90% {
+      top: 15vh;
+      left: 110vw;
+      transform: rotate(30deg) scale(0.4);
+    }
+    95% {
+      opacity: 1;
+    }
+    100% {
+      top: 10vh;
+      left: 130vw;
+      transform: rotate(45deg) scale(0.3);
+      opacity: 0;
+    }
   }
 }

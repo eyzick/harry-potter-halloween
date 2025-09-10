@@ -20,7 +20,7 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
     if (isMuted || isHedwigsThemePlaying) return;
     
     if (musicAudioRef.current) {
-      musicAudioRef.current.src = './audio/music/Hedwig\'s Theme.mp3';
+      musicAudioRef.current.src = `${process.env.PUBLIC_URL}/audio/music/Hedwig's Theme.mp3`;
       musicAudioRef.current.loop = true;
       
       musicAudioRef.current.onerror = () => {
@@ -32,8 +32,6 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
       }).catch((error) => {
         console.warn('Background music playback failed:', error);
       });
-    } else {
-      console.warn('Music audio ref is null');
     }
   }, [isMuted, isHedwigsThemePlaying]);
 
@@ -79,7 +77,7 @@ const AudioManager = forwardRef<AudioManagerRef, AudioManagerProps>(({ isLetterO
         'gryffindor.mp3',
       ];
       const randomFile = voicyFiles[Math.floor(Math.random() * voicyFiles.length)];
-      voicyAudioRef.current.src = `./audio/voicy/${randomFile}`;
+      voicyAudioRef.current.src = `${process.env.PUBLIC_URL}/audio/voicy/${randomFile}`;
       voicyAudioRef.current.volume = 0.7;
       
       voicyAudioRef.current.onerror = () => {
