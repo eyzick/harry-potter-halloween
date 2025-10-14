@@ -33,7 +33,7 @@ const InvitationCard: React.FC = () => {
         <div className="card-content">
           <div className="hogwarts-crest">
             <img 
-              src="./house-crest.png" 
+              src={`${process.env.PUBLIC_URL}/house-crest.png`} 
               alt="Hogwarts School Crest" 
               className="crest-image"
             />
