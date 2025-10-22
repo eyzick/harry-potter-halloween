@@ -237,12 +237,11 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
                       <p><strong>Guests:</strong> {rsvp.guestCount}</p>
                       <p><strong>Submitted:</strong> {formatDate(rsvp.timestamp)}</p>
                       {rsvp.dietaryRestrictions && <p><strong>Dietary:</strong> {rsvp.dietaryRestrictions}</p>}
-                      {rsvp.bringingItems && 
-                       (rsvp.bringingItems.drinks?.length > 0 || rsvp.bringingItems.snacks?.length > 0 || rsvp.bringingItems.other?.length > 0) && (
+                      {(rsvp.bringingItems.drinks.length > 0 || rsvp.bringingItems.snacks.length > 0 || rsvp.bringingItems.other.length > 0) && (
                         <div className="bringing-items">
                           <strong>Bringing:</strong>
                           <ul>
-                            {rsvp.bringingItems.drinks?.length > 0 && (
+                            {rsvp.bringingItems.drinks.length > 0 && (
                               <li>
                                 <strong>Drinks:</strong>
                                 <ul>
@@ -252,7 +251,7 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
                                 </ul>
                               </li>
                             )}
-                            {rsvp.bringingItems.snacks?.length > 0 && (
+                            {rsvp.bringingItems.snacks.length > 0 && (
                               <li>
                                 <strong>Snacks:</strong>
                                 <ul>
@@ -262,7 +261,7 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
                                 </ul>
                               </li>
                             )}
-                            {rsvp.bringingItems.other?.length > 0 && (
+                            {rsvp.bringingItems.other.length > 0 && (
                               <li>
                                 <strong>Other:</strong>
                                 <ul>

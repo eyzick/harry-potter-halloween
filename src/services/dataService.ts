@@ -118,15 +118,7 @@ const getRSVPsFromAPI = async (): Promise<StoredRSVP[]> => {
     
     return rsvps.map((rsvp: any) => ({
       ...rsvp,
-      guestCount: Number(rsvp.guestCount) || 1,
-      // Migrate old bringingItems format if needed
-      bringingItems: Array.isArray(rsvp.bringingItems) 
-        ? { 
-            drinks: rsvp.drinksDetails ? [rsvp.drinksDetails] : [], 
-            snacks: rsvp.snacksDetails ? [rsvp.snacksDetails] : [], 
-            other: rsvp.otherDetails ? [rsvp.otherDetails] : [] 
-          }
-        : rsvp.bringingItems // Keep new format
+      guestCount: Number(rsvp.guestCount) || 1
     }));
   } catch (error) {
     console.error('Failed to fetch RSVPs from API:', error);
