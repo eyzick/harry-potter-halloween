@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './RSVPForm.css';
 import { Cross2Icon, StarFilledIcon, StarIcon, CircleIcon, CookieIcon } from '@radix-ui/react-icons';
-import { sendRSVPNotification, sendRSVPConfirmation, RSVPEmailData } from '../services/emailService';
+import { sendRSVPConfirmation, RSVPEmailData } from '../services/emailService';
 import { saveRSVP, getCategorySummary, RSVPData, CategorySummary } from '../services/dataService';
 
 
@@ -84,20 +84,12 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose }) => {
         console.warn('RSVP saved to localStorage (API not available)');
       }
       
+      // Send confirmation email to the guest
       const emailData: RSVPEmailData = {
         ...formData,
         timestamp: Date.now()
       };
       
-      // Send notification to organizers
-      const notificationSent = await sendRSVPNotification(emailData);
-      if (notificationSent) {
-        console.log('Email notification sent successfully');
-      } else {
-        console.warn('Failed to send email notification, but RSVP was saved');
-      }
-
-      // Send confirmation to the guest
       const confirmationSent = await sendRSVPConfirmation(emailData);
       if (confirmationSent) {
         console.log('Confirmation email sent successfully');
