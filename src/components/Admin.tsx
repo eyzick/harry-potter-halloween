@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Admin.css';
-import { Cross2Icon, DownloadIcon, PersonIcon, CalendarIcon, StarIcon, TrashIcon } from '@radix-ui/react-icons';
+import { Cross2Icon, DownloadIcon, PersonIcon, CalendarIcon, StarIcon, TrashIcon, EnvelopeClosedIcon } from '@radix-ui/react-icons';
 import { getRSVPs, deleteRSVP, getCategorySummary, StoredRSVP, CategorySummary, getStorageMethod } from '../services/dataService';
+import ReminderManager from './ReminderManager';
 
 
 interface AdminProps {
@@ -16,7 +17,7 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
     snacks: [],
     other: []
   });
-  const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'summary'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'summary' | 'reminders'>('overview');
 
   useEffect(() => {
     const loadData = async () => {
@@ -140,6 +141,13 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
           >
             <StarIcon className="icon" />
             Summary
+          </button>
+          <button 
+            className={`admin-tab ${activeTab === 'reminders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reminders')}
+          >
+            <EnvelopeClosedIcon className="icon" />
+            Reminders
           </button>
         </div>
 
@@ -328,6 +336,12 @@ const Admin: React.FC<AdminProps> = ({ onClose }) => {
                   )}
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'reminders' && (
+            <div className="reminders-section">
+              <ReminderManager rsvps={rsvps} />
             </div>
           )}
         </div>
