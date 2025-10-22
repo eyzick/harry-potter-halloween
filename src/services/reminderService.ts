@@ -71,11 +71,12 @@ const formatBringingItems = (rsvp: StoredRSVP): string => {
 };
 
 /**
- * Generates HTML content for reminder email preview
+ * Generates HTML content for reminder email preview using the actual template
  */
 export const generateReminderHTML = (rsvp: StoredRSVP): string => {
   const bringingItemsText = formatBringingItems(rsvp);
   
+  // Use the actual reminder template HTML structure
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -137,6 +138,13 @@ export const generateReminderHTML = (rsvp: StoredRSVP): string => {
         .party-details h2 {
             color: #4a90e2;
         }
+        .activities {
+            background-color: #f0e6ff;
+            border-left-color: #9b59b6;
+        }
+        .activities h2 {
+            color: #9b59b6;
+        }
         .footer {
             background-color: #333;
             color: white;
@@ -158,8 +166,28 @@ export const generateReminderHTML = (rsvp: StoredRSVP): string => {
             padding: 0 10px;
             font-size: 20px;
         }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .prize-info {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+        }
+        .prize-info h2 {
+            color: #28a745;
+        }
         .bringing-items {
             white-space: pre-line;
+            font-family: 'Georgia', serif;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #8B4513;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -173,7 +201,49 @@ export const generateReminderHTML = (rsvp: StoredRSVP): string => {
         <div class="content">
             <div class="section">
                 <h2>Dear ${rsvp.name},</h2>
-                <p>This is a friendly reminder about our magical Harry Potter Halloween celebration! We're excited to see you there. Here's a quick recap of your RSVP details:</p>
+                <p>The magical evening is almost upon us! We're so excited to celebrate with you at our Harry Potter Halloween party. Here's everything you need to know:</p>
+            </div>
+
+            <div class="section party-details">
+                <h2>🎃 Party Details 🎃</h2>
+                <div class="info-item">
+                    <span class="info-label">Date:</span> ${PARTY_DETAILS.date}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Time:</span> ${PARTY_DETAILS.time}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Location:</span><br>
+                    ${PARTY_DETAILS.address}
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Parking:</span> Street parking is available around the venue
+                </div>
+            </div>
+
+            <div class="section activities">
+                <h2>🏆 Magical Activities & Contests 🏆</h2>
+                <div class="highlight">
+                    <strong>Costume Contest:</strong> Show off your magical attire! Top three costumes will receive prizes.
+                </div>
+                <div class="highlight">
+                    <strong>House Cup Tournament:</strong> Compete in magical games and challenges to earn points for your house. Will Gryffindor, Hufflepuff, Ravenclaw, or Slytherin claim victory?
+                </div>
+            </div>
+
+            <div class="section prize-info">
+                <h2>🎁 Prizes Await! 🎁</h2>
+                <p>Winners of both the costume contest and House Cup tournament will receive magical prizes! We've prepared some enchanting rewards for our champions.</p>
+            </div>
+
+            <div class="section">
+                <h2>What to Bring</h2>
+                <ul>
+                    <li>Your magical costume (required for the contest!)</li>
+                    <li>Your house pride and competitive spirit</li>
+                    <li>An appetite for magical treats and beverages</li>
+                    <li>Any items you mentioned in your RSVP</li>
+                </ul>
             </div>
 
             <div class="section">
@@ -196,37 +266,20 @@ export const generateReminderHTML = (rsvp: StoredRSVP): string => {
                 </div>
             </div>
 
-            <div class="section party-details">
-                <h2>🎃 Party Information 🎃</h2>
-                <div class="info-item">
-                    <span class="info-label">Date:</span> ${PARTY_DETAILS.date}
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Time:</span> ${PARTY_DETAILS.time}
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Location:</span><br>
-                    ${PARTY_DETAILS.address}
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Parking:</span> ${PARTY_DETAILS.streetParking}
-                </div>
-            </div>
-
             <div class="section">
                 <h2>Important Reminders</h2>
                 <ul>
-                    <li>Please arrive in costume! Magical theme optional 🧙‍♀️</li>
-                    <li>We'll have plenty of magical treats and beverages</li>
-                    <li>Street parking is available - no need to worry about finding a spot!</li>
-                    <li>If you need to make any changes to your RSVP, please contact us as soon as possible</li>
+                    <li>Costumes are required for the costume contest participation</li>
+                    <li>Street parking is available - please arrive a few minutes early to find a spot</li>
+                    <li>We'll have magical treats, beverages, and activities throughout the evening</li>
+                    <li>Don't forget to bring your competitive spirit for the House Cup tournament!</li>
                 </ul>
             </div>
 
             <div class="section">
                 <p style="text-align: center; font-size: 18px; color: #8B4513;">
-                    <strong>We can't wait to celebrate with you!</strong><br>
-                    <em>Mischief Managed! ✨</em>
+                    <strong>See you soon for a magical evening!</strong><br>
+                    <em>May the best house win! ✨</em>
                 </p>
             </div>
         </div>
