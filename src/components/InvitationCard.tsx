@@ -59,7 +59,7 @@ const InvitationCard: React.FC = () => {
               <span className="detail-label">
                 <HomeIcon className="icon" /> Location:
               </span>
-              <span className="detail-value">1212 Summerfield Dr, Herndon VA 20170</span>
+              <span className="detail-value">redacted</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">

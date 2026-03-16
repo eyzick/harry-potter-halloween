@@ -55,7 +55,7 @@ export const sendRSVPConfirmation = async (rsvpData: RSVPEmailData): Promise<boo
 
     const partyDate = 'October 31st, 2025'; 
     const partyTime = '8:00 PM'; 
-    const partyAddress = '1212 Summerfield Dr, Herndon VA 20170';
+    const partyAddress = '4 Privet Drive';
 
     console.log('Sending confirmation email to:', rsvpData.email);
     console.log('Using template ID:', EMAILJS_CONFIRMATION_TEMPLATE_ID);

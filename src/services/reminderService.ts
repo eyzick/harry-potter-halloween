@@ -41,7 +41,7 @@ export interface ReminderResult {
 export const PARTY_DETAILS = {
   date: 'October 31st, 2025',
   time: '8:00 PM',
-  address: '1212 Summerfield Dr, Herndon VA 20170',
+  address: '4 Privit Drive',
   streetParking: 'Yes, there is street parking available',
   contactEmail: 'your-email@example.com' // Update this with your actual contact email
 };
